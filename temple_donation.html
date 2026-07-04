@@ -1,0 +1,677 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>Temple Donation</title>
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+<style>
+body{
+    background:#f5f5f5;
+    padding-bottom:30px;
+}
+
+.banner{
+    width:100%;
+    height:220px;
+    object-fit:cover;
+    border-radius:15px;
+}
+
+.card{
+    border:none;
+    border-radius:15px;
+}
+
+#donorList{
+    max-height:300px;
+    overflow-y:auto;
+}
+
+.banner{
+    width:100%;
+    height:230px;
+    object-fit:cover;
+}
+
+#loginBar{
+    display:flex;
+    justify-content:flex-end;
+    align-items:center;
+    gap:8px;
+    margin-bottom:10px;
+}
+
+#adminBadge{
+    display:none;
+}
+</style>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</head>
+
+<body>
+
+<div class="container mt-3">
+
+    <!-- Admin login bar -->
+    <div id="loginBar">
+
+        <span id="adminBadge" class="badge bg-success">
+            Admin
+        </span>
+
+        <button class="btn btn-sm btn-outline-secondary"
+                id="loginBtn"
+                data-bs-toggle="modal"
+                data-bs-target="#loginModal">
+            Admin Login
+        </button>
+
+        <button class="btn btn-sm btn-outline-danger"
+                id="logoutBtn"
+                style="display:none;"
+                onclick="logoutAdmin()">
+            Logout
+        </button>
+
+    </div>
+
+    <!-- Login Modal -->
+    <div class="modal fade" id="loginModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+
+                <div class="modal-header">
+                    <h5 class="modal-title" id="loginModalTitle">Admin Login</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+
+                <div class="modal-body">
+
+                    <input type="text"
+                           id="adminUser"
+                           class="form-control mb-3"
+                           placeholder="Username"
+                           autocomplete="off">
+
+                    <input type="password"
+                           id="adminPass"
+                           class="form-control mb-2"
+                           placeholder="Password"
+                           autocomplete="off">
+
+                    <div id="loginError" class="text-danger small" style="display:none;">
+                        Invalid username or password.
+                    </div>
+
+                </div>
+
+                <div class="modal-footer">
+                    <button class="btn btn-danger w-100" id="loginSubmitBtn" onclick="checkLogin()">
+                        Login
+                    </button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Banner -->
+    <!-- <img src="https://d1msew97rp2nin.cloudfront.net/prod/phool/blogimages/1720175612133101.webp"
+         class="banner shadow"> -->
+
+    <div id="templeBanner" class="carousel slide shadow rounded overflow-hidden mb-3"
+     data-bs-ride="carousel"
+     data-bs-interval="3000">
+
+    <!-- Indicators -->
+    <div class="carousel-indicators">
+        <button type="button"
+                data-bs-target="#templeBanner"
+                data-bs-slide-to="0"
+                class="active"></button>
+
+        <button type="button"
+                data-bs-target="#templeBanner"
+                data-bs-slide-to="1"></button>
+
+        <button type="button"
+                data-bs-target="#templeBanner"
+                data-bs-slide-to="2"></button>
+    </div>
+
+    <!-- Images -->
+    <div class="carousel-inner">
+
+        <div class="carousel-item active">
+            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRMnOSOr3tzWpQxCtksZkmzsRjzLmWd6rxj67c-rfhew5ekQIYR325L4uD5&s=10"
+                 class="d-block w-100 banner">
+        </div>
+
+        <div class="carousel-item">
+            <img src="https://www.rvatemples.com/wp-content/uploads/2018/03/sri-malai-mahadeshwara-hill-temple_1409385656.jpg"
+                 class="d-block w-100 banner">
+        </div>
+
+        <div class="carousel-item">
+            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSD9KQs9qIir0E4DikqVDYRmIUl8S4AOv0jWwfSPUmUJb5onvAWlaE_ouJP&s=10"
+                 class="d-block w-100 banner">
+        </div>
+
+    </div>
+
+    <!-- Previous -->
+    <button class="carousel-control-prev"
+            type="button"
+            data-bs-target="#templeBanner"
+            data-bs-slide="prev">
+
+        <span class="carousel-control-prev-icon"></span>
+
+    </button>
+
+    <!-- Next -->
+    <button class="carousel-control-next"
+            type="button"
+            data-bs-target="#templeBanner"
+            data-bs-slide="next">
+
+        <span class="carousel-control-next-icon"></span>
+
+    </button>
+
+</div>
+
+    <!-- Language Buttons -->
+    <div class="text-center mt-3 mb-3">
+
+        <div class="btn-group">
+
+            <input type="radio"
+                   class="btn-check"
+                   name="lang"
+                   id="langEn"
+                   checked
+                   onclick="setLanguage('en')">
+
+            <label class="btn btn-outline-danger" for="langEn">
+                English
+            </label>
+
+            <input type="radio"
+                   class="btn-check"
+                   name="lang"
+                   id="langTa"
+                   onclick="setLanguage('ta')">
+
+            <label class="btn btn-outline-danger" for="langTa">
+                தமிழ்
+            </label>
+
+        </div>
+
+    </div>
+
+    <!-- Dashboard -->
+    <div class="row">
+
+        <div class="col-4">
+            <div class="card bg-success text-white text-center p-3 shadow mb-3">
+                <h6 id="totalLabel">Total Donation</h6>
+                <h3 id="totalDonation">₹0</h3>
+            </div>
+        </div>
+
+        <div class="col-4">
+            <div class="card bg-primary text-white text-center p-3 shadow mb-3">
+                <h6 id="todayLabel">Today's Donation</h6>
+                <h3 id="todayDonation">₹0</h3>
+            </div>
+        </div>
+
+        <div class="col-4">
+            <div class="card bg-warning text-dark text-center p-3 shadow mb-3">
+                <h6 id="weekLabel">This Week Donation</h6>
+                <h3 id="weekDonation">₹0</h3>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Form (Admin only) -->
+    <div class="card shadow p-4" id="donationFormCard" style="display:none;">
+
+        <h3 class="text-center text-danger mb-4" id="titleLabel">
+            Temple Donation
+        </h3>
+
+        <input type="text"
+               id="name"
+               class="form-control mb-3"
+               placeholder="Name *">
+
+        <input type="tel"
+               id="phone"
+               class="form-control mb-3"
+               placeholder="Phone Number *">
+
+        <input type="text"
+               id="fatherName"
+               class="form-control mb-3"
+               placeholder="Father Name (Optional)">
+
+        <input type="date"
+               id="date"
+               class="form-control mb-3">
+
+        <input type="text"
+               id="reason"
+               class="form-control mb-3"
+               placeholder="Reason (Optional)">
+
+        <input type="number"
+               id="amount"
+               class="form-control mb-3"
+               placeholder="Amount *">
+
+        <select id="paymentMode"
+                class="form-select mb-3"
+                onchange="paymentModeChanged()">
+
+            <option value="">Payment Mode *</option>
+            <option value="Hand Cash">Hand Cash</option>
+            <option value="Online Payment">Online Payment</option>
+
+        </select>
+
+        <!-- Hand Cash -->
+        <div id="cashDiv" style="display:none;">
+            <input type="text"
+                   id="cashReceiver"
+                   class="form-control mb-3"
+                   placeholder="Cash Given To *">
+        </div>
+
+        <!-- Online Payment -->
+        <div id="onlineDiv" style="display:none;">
+            <div class="alert alert-success text-center">
+                <b>UPI ID</b><br>
+                ashokeee23-2@oksbi
+            </div>
+        </div>
+
+        <button class="btn btn-danger w-100"
+                onclick="submitDonation()"
+                id="donateBtn">
+            Donate
+        </button>
+
+    </div>
+
+    <!-- Locked notice (Non-admin) -->
+    <div class="card shadow p-4 text-center" id="lockedNotice">
+        <p class="text-muted mb-0" id="lockedText">
+            🔒 Only temple admin can record a donation. You can view totals and the donor list below.
+        </p>
+    </div>
+
+    <!-- Donor List -->
+    <div class="card shadow mt-4 p-3">
+
+        <h4 id="donorTitle">Who Donated?</h4>
+
+        <div id="donorList">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th id="dateHeader">Date</th>
+                        <th id="nameHeader">Name</th>
+                        <th id="fatherNameHeader">Father Name</th>
+                        <th>₹</th>
+                    </tr>
+                </thead>
+
+                <tbody id="donorTable"></tbody>
+            </table>
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+
+const API_URL =
+"https://script.google.com/macros/s/AKfycbxUrjK6q2F8-Y0He3Xf8OaCzGtKF8d9EfcYD61oFt_soItKoxM7eR0qnzWt3RV0S7tC/exec";
+
+const ADMIN_USERNAME = "Emboys";
+const ADMIN_PASSWORD = "Ashok@2026";
+
+let isAdmin = false;
+
+document.getElementById("date").value =
+new Date().toISOString().split("T")[0];
+
+let currentLanguage = "en";
+
+const messages = {
+    en:{
+        required:"Please fill all required fields.",
+        phone:"Please enter a valid 10 digit phone number.",
+        cash:"Please enter who received the cash.",
+        success:"Donation saved successfully.",
+        failed:"Failed to save donation.",
+        loginError:"Invalid username or password."
+    },
+    ta:{
+        required:"தேவையான அனைத்து விவரங்களையும் நிரப்பவும்.",
+        phone:"சரியான 10 இலக்க கைபேசி எண்ணை உள்ளிடவும்.",
+        cash:"பணம் பெற்றவரின் பெயரை உள்ளிடவும்.",
+        success:"காணிக்கை வெற்றிகரமாக பதிவு செய்யப்பட்டது.",
+        failed:"காணிக்கையை பதிவு செய்ய முடியவில்லை.",
+        loginError:"பயனர்பெயர் அல்லது கடவுச்சொல் தவறு."
+    }
+};
+
+function formatDate(dateValue){
+
+    const date = new Date(dateValue);
+
+    const day = String(date.getDate()).padStart(2,'0');
+    const month = String(date.getMonth() + 1).padStart(2,'0');
+    const year = date.getFullYear();
+
+    return day + "-" + month + "-" + year;
+}
+
+// Returns the Monday..Sunday range (as Date objects, time zeroed) for the week containing "refDate"
+function getWeekRange(refDate){
+
+    const d = new Date(refDate);
+    d.setHours(0,0,0,0);
+
+    const day = d.getDay(); // 0 = Sunday .. 6 = Saturday
+    const diffToMonday = (day === 0) ? -6 : (1 - day);
+
+    const monday = new Date(d);
+    monday.setDate(d.getDate() + diffToMonday);
+
+    const sunday = new Date(monday);
+    sunday.setDate(monday.getDate() + 6);
+    sunday.setHours(23,59,59,999);
+
+    return {start:monday, end:sunday};
+}
+
+function updateAuthUI(){
+
+    document.getElementById("adminBadge").style.display = isAdmin ? "inline-block" : "none";
+    document.getElementById("loginBtn").style.display = isAdmin ? "none" : "inline-block";
+    document.getElementById("logoutBtn").style.display = isAdmin ? "inline-block" : "none";
+
+    document.getElementById("donationFormCard").style.display = isAdmin ? "block" : "none";
+    document.getElementById("lockedNotice").style.display = isAdmin ? "none" : "block";
+}
+
+function checkLogin(){
+
+    const user = document.getElementById("adminUser").value.trim();
+    const pass = document.getElementById("adminPass").value;
+
+    if(user === ADMIN_USERNAME && pass === ADMIN_PASSWORD){
+
+        isAdmin = true;
+        updateAuthUI();
+
+        document.getElementById("loginError").style.display = "none";
+        document.getElementById("adminUser").value = "";
+        document.getElementById("adminPass").value = "";
+
+        const modalEl = document.getElementById("loginModal");
+        const modal = bootstrap.Modal.getInstance(modalEl) || new bootstrap.Modal(modalEl);
+        modal.hide();
+
+    }else{
+
+        document.getElementById("loginError").innerText = messages[currentLanguage].loginError;
+        document.getElementById("loginError").style.display = "block";
+
+        document.getElementById("adminUser").value = "";
+        document.getElementById("adminPass").value = "";
+        document.getElementById("adminUser").focus();
+    }
+}
+
+function logoutAdmin(){
+    isAdmin = false;
+    updateAuthUI();
+}
+
+function setLanguage(lang){
+
+    currentLanguage = lang;
+
+    if(lang == "ta"){
+
+        document.getElementById("titleLabel").innerText="கோவில் காணிக்கை";
+        document.getElementById("totalLabel").innerText="மொத்த காணிக்கை";
+        document.getElementById("todayLabel").innerText="இன்றைய காணிக்கை";
+        document.getElementById("weekLabel").innerText="இந்த வாரம் காணிக்கை";
+        document.getElementById("donorTitle").innerText="காணிக்கை வழங்கியவர்கள்";
+        document.getElementById("dateHeader").innerText="தேதி";
+        document.getElementById("nameHeader").innerText="பெயர்";
+        document.getElementById("fatherNameHeader").innerText="தந்தை பெயர்";
+        document.getElementById("lockedText").innerText="🔒 நிர்வாகி மட்டுமே காணிக்கையை பதிவு செய்ய முடியும். மொத்தம் மற்றும் பட்டியலை மட்டும் நீங்கள் காணலாம்.";
+
+        document.getElementById("loginBtn").innerText="நிர்வாகி உள்நுழைவு";
+        document.getElementById("logoutBtn").innerText="வெளியேறு";
+        document.getElementById("loginModalTitle").innerText="நிர்வாகி உள்நுழைவு";
+        document.getElementById("adminUser").placeholder="பயனர்பெயர்";
+        document.getElementById("adminPass").placeholder="கடவுச்சொல்";
+        document.getElementById("loginSubmitBtn").innerText="உள்நுழை";
+
+        document.getElementById("name").placeholder="பெயர் *";
+        document.getElementById("phone").placeholder="கைபேசி எண் *";
+        document.getElementById("fatherName").placeholder="தந்தை பெயர் (விருப்பம்)";
+        document.getElementById("reason").placeholder="காரணம் (விருப்பம்)";
+        document.getElementById("amount").placeholder="தொகை *";
+        document.getElementById("cashReceiver").placeholder="பணம் பெற்றவர் *";
+
+        document.getElementById("donateBtn").innerText="காணிக்கை செலுத்தவும்";
+
+    }else{
+
+        document.getElementById("titleLabel").innerText="Temple Donation";
+        document.getElementById("totalLabel").innerText="Total Donation";
+        document.getElementById("todayLabel").innerText="Today's Donation";
+        document.getElementById("weekLabel").innerText="This Week Donation";
+        document.getElementById("donorTitle").innerText="Who Donated?";
+        document.getElementById("dateHeader").innerText="Date";
+        document.getElementById("nameHeader").innerText="Name";
+        document.getElementById("fatherNameHeader").innerText="Father Name";
+        document.getElementById("lockedText").innerText="🔒 Only temple admin can record a donation. You can view totals and the donor list below.";
+
+        document.getElementById("loginBtn").innerText="Admin Login";
+        document.getElementById("logoutBtn").innerText="Logout";
+        document.getElementById("loginModalTitle").innerText="Admin Login";
+        document.getElementById("adminUser").placeholder="Username";
+        document.getElementById("adminPass").placeholder="Password";
+        document.getElementById("loginSubmitBtn").innerText="Login";
+
+        document.getElementById("name").placeholder="Name *";
+        document.getElementById("phone").placeholder="Phone Number *";
+        document.getElementById("fatherName").placeholder="Father Name (Optional)";
+        document.getElementById("reason").placeholder="Reason (Optional)";
+        document.getElementById("amount").placeholder="Amount *";
+        document.getElementById("cashReceiver").placeholder="Cash Given To *";
+
+        document.getElementById("donateBtn").innerText="Donate";
+    }
+}
+
+function paymentModeChanged(){
+
+    let mode =
+    document.getElementById("paymentMode").value;
+
+    document.getElementById("cashDiv").style.display =
+    mode=="Hand Cash" ? "block" : "none";
+
+    document.getElementById("onlineDiv").style.display =
+    mode=="Online Payment" ? "block" : "none";
+}
+
+async function submitDonation(){
+
+    if(!isAdmin){
+        return;
+    }
+
+    const donateBtn = document.getElementById("donateBtn");
+
+    // Prevent multiple submissions from rapid/double clicks
+    if(donateBtn.disabled){
+        return;
+    }
+
+    let name = document.getElementById("name").value;
+    let phone = document.getElementById("phone").value;
+    let fatherName = document.getElementById("fatherName").value;
+    let date = document.getElementById("date").value;
+    let reason = document.getElementById("reason").value;
+    let amount = document.getElementById("amount").value;
+    let paymentMode = document.getElementById("paymentMode").value;
+    let cashReceiver = document.getElementById("cashReceiver").value;
+
+    if(name=="" || phone=="" || amount=="" || paymentMode==""){
+        alert(messages[currentLanguage].required);
+        return;
+    }
+
+    if(phone.length != 10){
+        alert(messages[currentLanguage].phone);
+        return;
+    }
+
+    if(paymentMode=="Hand Cash" && cashReceiver==""){
+        alert(messages[currentLanguage].cash);
+        return;
+    }
+
+    const data = {
+        date:date,
+        name:name,
+        phone:phone,
+        fatherName:fatherName,
+        reason:reason,
+        amount:amount,
+        paymentMode:paymentMode,
+        cashReceiver:cashReceiver,
+        status:paymentMode=="Hand Cash" ? "Received" : "Paid"
+    };
+
+    // Lock the button right away so a second click can't fire a duplicate submission
+    donateBtn.disabled = true;
+    const originalBtnText = donateBtn.innerText;
+    donateBtn.innerText = currentLanguage === "ta" ? "சேமிக்கிறது..." : "Saving...";
+
+    try{
+
+        await fetch(API_URL,{
+            method:"POST",
+            body:JSON.stringify(data)
+        });
+
+        alert(messages[currentLanguage].success);
+
+        // Reset the form instead of a full page reload, so the admin stays logged in
+        document.getElementById("name").value = "";
+        document.getElementById("phone").value = "";
+        document.getElementById("fatherName").value = "";
+        document.getElementById("reason").value = "";
+        document.getElementById("amount").value = "";
+        document.getElementById("paymentMode").value = "";
+        document.getElementById("cashReceiver").value = "";
+        document.getElementById("cashDiv").style.display = "none";
+        document.getElementById("onlineDiv").style.display = "none";
+        document.getElementById("date").value = new Date().toISOString().split("T")[0];
+
+        // Small buffer before refreshing, giving the Google Sheet a moment to update
+        // before we read it back — avoids "today's donation" looking stale right after saving.
+        setTimeout(loadDashboard, 1200);
+
+    }catch(err){
+        alert(messages[currentLanguage].failed);
+    } finally {
+
+        // Re-enable the button a moment after the request finishes,
+        // instead of instantly, so accidental double-clicks are absorbed.
+        setTimeout(()=>{
+            donateBtn.disabled = false;
+            donateBtn.innerText = originalBtnText;
+        }, 1500);
+    }
+}
+
+async function loadDashboard(){
+
+    try{
+
+        const response = await fetch(API_URL);
+        const donations = await response.json();
+
+        let total = 0;
+        let todayTotal = 0;
+        let weekTotal = 0;
+
+        let today =
+        new Date().toISOString().split("T")[0];
+
+        const weekRange = getWeekRange(new Date());
+
+        let rows = "";
+
+        donations.reverse().forEach(d=>{
+
+            total += Number(d.amount);
+
+            if(String(d.date).includes(today)){
+                todayTotal += Number(d.amount);
+            }
+
+            const donationDate = new Date(d.date);
+
+            if(donationDate >= weekRange.start && donationDate <= weekRange.end){
+                weekTotal += Number(d.amount);
+            }
+
+            rows += `
+            <tr>
+                <td>${formatDate(d.date)}</td>
+                <td>${d.name}</td>
+                <td>${d.fatherName || "-"}</td>
+                <td>₹${d.amount}</td>
+            </tr>
+            `;
+        });
+
+        document.getElementById("totalDonation").innerHTML="₹"+total;
+        document.getElementById("todayDonation").innerHTML="₹"+todayTotal;
+        document.getElementById("weekDonation").innerHTML="₹"+weekTotal;
+        document.getElementById("donorTable").innerHTML=rows;
+
+    }catch(err){
+        console.log(err);
+    }
+}
+
+updateAuthUI();
+loadDashboard();
+
+</script>
+
+</body>
+</html>
